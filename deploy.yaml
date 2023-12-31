@@ -1,0 +1,51 @@
+- name : web layer
+  hosts : PROD
+  vars : 
+   MOD_JK_URL : https://archive.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.48-src.tar.gz
+  become : yes
+  tasks :
+
+   - name : Resgister mod_src variable
+     shell : echo "{{MOD_JK_URL}}" | awk -F / '{print $NF}' | sed 's/.tar.gz//'
+     register : rs
+
+   - name : print the variables
+     debug :
+      msg : "{{rs}}"
+
+   - name : define set_fact
+     set_fact :
+      MOD_JK_SRC : "{{rs.stdout}}"
+
+   - name : print set_fact
+     debug :
+      msg : "{{MOD_JK_SRC}}"
+
+   - name : install web server and dependencies
+     yum :
+       name : "{{item.name}}"
+       state : "{{item.state}}"
+     loop :
+        - { name : 'httpd', state : 'latest'}
+        - { name : 'gcc', state : 'latest'}
+        - { name : 'httpd-devel', state : 'latest'}
+    
+   - name : starting web server
+     service : 
+        name : httpd
+        state : started
+
+   - name : Downloading and extracting mod jk
+     unarchive :
+      src : "{{MOD_JK_URL}}"
+      dest : /tmp/
+      remote_src : yes
+
+   - name : compile mod jk
+     shell : "{{item}}"
+     args :
+      chdir : "/tmp/{{MOD_JK_SRC}}/native"
+     loop :
+       - ./configure --with-apxs=/bin/apxs
+       - make
+       - make install
