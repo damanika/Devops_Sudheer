@@ -16,14 +16,24 @@ Jenkins-1 :-
   systemctl start jenkins
 
 
+#####################################################################################################
+
+Nexus :-
+	sudo su -
+	wget https://download.sonatype.com/nexus/3/nexus-3.63.0-01-unix.tar.gz    -----> get it from google "Nexus Repository Manager Download"
+	tar -xvf nexus-3.63.0-01-unix.tar.gz
+	sudo yum install java-1.8.0    ----> Needs 8 version
+	java --version
+	cd nexus-*
+	cd bin/
+	vim nexus.rc
+		run_as_user="root"
+	./nexus start
+	./nexus status
+
+
 
 
 #####################################################################################################
 
-Ansible :-
-
-
-#####################################################################################################
-
-Jenkins_Ansible :-
 
