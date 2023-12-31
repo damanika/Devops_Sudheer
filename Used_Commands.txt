@@ -1,9 +1,23 @@
 
-
-Jenkins :-
+#####################################################################################################
+Jenkins-1 :-
+  sudo su -
   sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
   sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-  
+  sudo amazon-linux-extras install java-openjdk11
+  yum install jenkins
+  yum install git -y
+  yum install maven -y
+  vim /etc/profile.d/maven.sh
+		export M2_HOME=/usr/share/maven    -----> Get it from mvn --version
+		export PATH=${M2_HOME}/bin:${PATH}
+  sh /etc/profile.d/maven.sh
+  reboot
+  systemctl start jenkins
+
+
+
+
 #####################################################################################################
 
 Ansible :-
