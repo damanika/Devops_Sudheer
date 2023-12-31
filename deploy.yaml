@@ -1,51 +1,54 @@
-- name : web layer
+- name : Deploying war pack
   hosts : PROD
-  vars : 
-   MOD_JK_URL : https://archive.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.48-src.tar.gz
   become : yes
+  vars : 
+   USERNAME : tom_uesr
+   TOM_PATH : /tom
+   TOM_URL : https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.84/bin/apache-tomcat-9.0.84.tar.gz
+   WAR_URL : 
+   DEST_WAR : /tom/apache-tomcat-*/webapps/Vehicles_Hub.war
+   
   tasks :
+  
+   - name : Create Tom User
+     ansible.builtin.user:
+        name : "{{USERNAME}}"
 
-   - name : Resgister mod_src variable
-     shell : echo "{{MOD_JK_URL}}" | awk -F / '{print $NF}' | sed 's/.tar.gz//'
-     register : rs
+   - name : Create DIR for Tomcat
+     file :
+      path : "{{TOM_PATH}}"
+      owner : "{{USERNAME}}"
+      group : "{{USERNAME}}"
+      state : directory
+      mode : 0775
 
-   - name : print the variables
-     debug :
-      msg : "{{rs}}"
-
-   - name : define set_fact
-     set_fact :
-      MOD_JK_SRC : "{{rs.stdout}}"
-
-   - name : print set_fact
-     debug :
-      msg : "{{MOD_JK_SRC}}"
-
-   - name : install web server and dependencies
-     yum :
-       name : "{{item.name}}"
-       state : "{{item.state}}"
-     loop :
-        - { name : 'httpd', state : 'latest'}
-        - { name : 'gcc', state : 'latest'}
-        - { name : 'httpd-devel', state : 'latest'}
-    
-   - name : starting web server
-     service : 
-        name : httpd
-        state : started
-
-   - name : Downloading and extracting mod jk
-     unarchive :
-      src : "{{MOD_JK_URL}}"
-      dest : /tmp/
+   - name : Downloading Tom Tar file
+     ansible.builtin.archive :
+      src : "{{TOM_URL}}"
+      dest : "{{TOM_PATH}}"
       remote_src : yes
-
-   - name : compile mod jk
-     shell : "{{item}}"
+     become_user : "{{USERNAME}}"
+     
+   - name : Remove old directories
+     shell : rm -rf *;
      args :
-      chdir : "/tmp/{{MOD_JK_SRC}}/native"
-     loop :
-       - ./configure --with-apxs=/bin/apxs
-       - make
-       - make install
+      chdir : "/tom/apache-tomcat-*/webapps"
+     
+   - name : Downlaod Java Package
+     yum :
+       name : java
+       state : latest
+       
+   - name : Downlaod the artifact
+     get_url :
+       url : "{{WARPACK}}"
+       dest : "{{DEST_WAR}}"
+       
+   - name : Starting Tomcat Validation
+     shell : ps -ef | grep tomcat | grep -v grep
+       register : tomcat
+       ignore_errors : True
+       
+   - name : Start Tomcat if needed
+     shell : "nohup sh /tom/apache-tomcat-*/bin/startup.sh"
+       when : tomcat.rc != 0
