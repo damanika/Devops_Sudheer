@@ -1,0 +1,25 @@
+cd "/c/Users/z022561/OneDrive - Alliance/Desktop/DevOps/"
+
+cd Devops_Sudheer
+
+git status
+
+git add .
+
+git status
+
+git commit -m "Updated files on Jan 2024"
+
+git push origin
+
+
+
+
+
+
+//git clone https://github.com/damanika/Devops_Sudheer.git
+// git config --global http.sslVerify false
+// git config --global http.emptyAuth true
+// git config --global core.autocrlf true
+//git config --global --add http.proxy http://z022561:<Password>@138.21.17.37:3128
+
