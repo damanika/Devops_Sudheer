@@ -13,6 +13,8 @@ Jenkins-1 :-
 		export PATH=${M2_HOME}/bin:${PATH}
   sh /etc/profile.d/maven.sh
   reboot
+  
+  sudo su -
   systemctl start jenkins
 
 #####################################################################################################
