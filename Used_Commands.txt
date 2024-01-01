@@ -43,10 +43,10 @@ Ansible :-
 	cd /etc/ansible
 	vim inventory
 		[TEST]
-		192.168.0.1    ----> Test Instance
+		3.94.194.164    ----> Test Instance
 		
 		[PROD]
-		192.168.0.1    ----> Prod Instance
+		54.89.186.44    ----> Prod Instance
 		
 	ansible -i inventory all --list-hosts
 	vim sudhi_key.pem
@@ -57,6 +57,7 @@ Ansible :-
 		Modify Inventory line "inventory=inventory"
 		Modify Private_key_file line "private_key_file=sudhi_key.pem"
 		Modify remote_user line "remote_user=ec2-user"
+		:wq!
 	mkdir play
 	chmod 777 play
 	vim play/deploy.yaml
@@ -67,12 +68,10 @@ Ansible :-
 
 Ansible-2 :-
 	export ANSIBLE_CONFIG=/home/Jenkins_Ansible/ansible/ansible.cfg    -----> From ansible --version command
-	ID=$(curl http://10.182.39.91:8081/repository/maven-snapshots/com/ksapp/ks/maven-metadata.xml | grep SNAP | sed 's/<version>//' | sed 's/<\/version>//' | tail -n1 | xargs)
-	VER=$(curl http://10.182.39.91:8081/repository/maven-snapshots/com/ksapp/ks/maven-metadata.xml | grep value | sed 's/<value>// | 'sed 's/<\/value>//' | tail -n1 | xargs)
-	URL=$(echo "http://10.182.39.91:8081/repository/maven-snapshots/com/ksapp/ks/$ID/ks-$VER.war")
+	ID=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep SNAP | sed 's/<version>//' | sed 's/<\/version>//' | tail -n1 | xargs)
+	VER=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep value | sed 's/<value>// | 'sed 's/<\/value>//' | tail -n1 | xargs)
+	URL=$(echo "http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/$ID/Vehicle_Hub-$VER.war")
 	ansible-playbook /home/ks/ansible/play/deploy.yaml --extra-vars="warpack=$URL"
-
-
 
 
 
