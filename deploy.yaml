@@ -1,11 +1,11 @@
 - name : Deploying war pack
-  hosts : PROD
+  hosts : TEST
   become : yes
   vars : 
-   USERNAME : tom_uesr
+   USERNAME : tom_user
    TOM_PATH : /tom
    TOM_URL : https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.84/bin/apache-tomcat-9.0.84.tar.gz
-   DEST_WAR : /tom/apache-tomcat-*/webapps/Vehicles_Hub.war
+   DEST_WAR : /tom/apache-tomcat-9.0.84/webapps/Vehicles_Hub.war
    
   tasks :
   
@@ -22,7 +22,7 @@
       mode : 0775
 
    - name : Downloading Tom Tar file
-     ansible.builtin.archive :
+     ansible.builtin.unarchive :
       src : "{{TOM_URL}}"
       dest : "{{TOM_PATH}}"
       remote_src : yes
@@ -31,14 +31,15 @@
    - name : Remove old directories
      shell : rm -rf *;
      args :
-      chdir : "/tom/apache-tomcat-*/webapps"
+      chdir : "/tom/apache-tomcat-9.0.84/webapps"
+     become_user : "{{USERNAME}}"
      
-   - name : Downlaod Java Package
+   - name : Download Java Package
      yum :
        name : java
        state : latest
        
-   - name : Downlaod the artifact
+   - name : Download the artifact
      get_url :
        url : "{{WARPACK}}"
        dest : "{{DEST_WAR}}"
@@ -49,5 +50,5 @@
      ignore_errors : True
        
    - name : Start Tomcat if needed
-     shell : "nohup sh /tom/apache-tomcat-*/bin/startup.sh"
+     shell : "nohup sh /tom/apache-tomcat-9.0.84/bin/startup.sh"
      when : tomcat.rc != 0

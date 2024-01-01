@@ -51,7 +51,7 @@ Ansible :-
 	ansible -i inventory all --list-hosts
 	vim sudhi_key.pem
 		copy .pem file content and paste and save it
-	chmod 600 sudhi_key.pem
+	chmod 777 sudhi_key.pem
 	vim ansible.cfg
 		unhighlight - "host_key_checking=False"
 		Modify Inventory line "inventory=inventory"
@@ -71,7 +71,7 @@ Ansible-2 :-
 	ID=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep SNAP | sed 's/<version>//' | sed 's/<\/version>//' | tail -n1 | xargs)
 	VER=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep value | sed 's/<value>//' | sed 's/<\/value>//' | tail -n1 | xargs)
 	URL=$(echo "http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/$ID/Vehicle_Hub-$VER.war")
-	ansible-playbook /etc/ansible/play/deploy.yaml --extra-vars="warpack=$URL"
+	ansible-playbook /etc/ansible/play/deploy.yaml --extra-vars "WARPACK=$URL"
 
 
 
