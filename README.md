@@ -45,9 +45,9 @@
        
    - name : Starting Tomcat Validation
      shell : ps -ef | grep tomcat | grep -v grep
-     register : tomcat
-     ignore_errors : True
+       register : tomcat
+       ignore_errors : True
        
    - name : Start Tomcat if needed
      shell : "nohup sh /tom/apache-tomcat-*/bin/startup.sh"
-     when : tomcat.rc != 0
+       when : tomcat.rc != 0

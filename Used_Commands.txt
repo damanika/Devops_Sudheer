@@ -67,11 +67,11 @@ Ansible :-
 #####################################################################################################
 
 Ansible-2 :-
-	export ANSIBLE_CONFIG=/home/Jenkins_Ansible/ansible/ansible.cfg    -----> From ansible --version command
+	export ANSIBLE_CONFIG=/etc/ansible/ansible.cfg    -----> From ansible --version command
 	ID=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep SNAP | sed 's/<version>//' | sed 's/<\/version>//' | tail -n1 | xargs)
-	VER=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep value | sed 's/<value>// | 'sed 's/<\/value>//' | tail -n1 | xargs)
+	VER=$(curl http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/9-SNAPSHOT/maven-metadata.xml | grep value | sed 's/<value>//' | sed 's/<\/value>//' | tail -n1 | xargs)
 	URL=$(echo "http://52.23.222.204:8081/repository/maven-snapshots/com/Vehicle_Hubapp/Vehicle_Hub/$ID/Vehicle_Hub-$VER.war")
-	ansible-playbook /home/ks/ansible/play/deploy.yaml --extra-vars="warpack=$URL"
+	ansible-playbook /etc/ansible/play/deploy.yaml --extra-vars="warpack=$URL"
 
 
 
